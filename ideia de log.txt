@@ -1,0 +1,19 @@
+ideia de log
+
+grafo em G6
+método
+    tempos
+    check de solucao
+
+
+https://www.pythonforbeginners.com/files/with-statement-in-python
+https://www.pythonforbeginners.com/files/reading-and-writing-files-in-python
+
+
+
+
+https://python-guide-pt-br.readthedocs.io/pt_BR/latest/writing/logging.html
+https://realpython.com/python-logging/
+https://docs.python.org/3/howto/logging.html
+https://docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+
