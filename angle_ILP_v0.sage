@@ -51,7 +51,7 @@ def solve_angles_ILP(G):
             #aqui setei (2k+1) = 5
             p.add_constraint(path_constraint(path, w) <= 4)
         p.solve()
-        print(p)
+        #print(p)
         cont_numb_of_solves+=1
         if cont_numb_of_solves%100==0:
             print(cont_numb_of_solves)
@@ -200,7 +200,7 @@ def pair_to_other(pair,sample):
         return pair[1]
     else:
         return pair[0]
-        
+
 def cycle_to_angles(cycle):
     angles=[]
     for i in range(0,len(cycle)-2):

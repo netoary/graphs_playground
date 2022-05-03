@@ -99,7 +99,7 @@ for e in G.edges():
     _ = model.addConstr(equation==1, name='each edge has one color')
 model.update()
 
-model.write("modelo_debug.lp")
+#model.write("modelo_debug.lp")
 model.Params.lazyConstraints = 1
 model.optimize(mycallback)
 
