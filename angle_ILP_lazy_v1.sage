@@ -1,3 +1,7 @@
+"""
+    Implementa PLI por angulos com condições adicionadas via callback (em tempo de execução do solver)
+"""
+
 import gurobipy as gp
 from gurobipy import GRB
 
@@ -8,13 +12,49 @@ def pair_to_angle(pair):
     pair.sort()
     return (pair[0], pair[1])
 
-def is_path_of_length_five(edges):
-    H = Graph(edges)
-    if not H.is_connected():
-        return False
-    if not H.is_forest():
-        return False
-    return True
+def angle_to_common_vertex(angle):
+    """
+        Retorna o vértice em comum entre dois ângulos;
+    """
+    u, v, _ = angle[0]
+    x, y, _ = angle[1]
+    if u == x or u == y:
+        return u
+    else:
+        return v
+
+
+# ACHO QUE DA PRA GENERLIZAR AS TRES FUNÇÔES ABAIXO EM UMA SÓ!!!
+def edge_to_other_vertex(edge, vertex):
+    """
+        Retorna o outro vértice de uma aresta;
+    """
+    if vertex == edge[0]:
+        return edge[1]
+    else:
+        return edge[0]
+
+
+def angle_to_other_edge(angle, edge):
+    """
+        Retorna a outra aresta de um ângulo;
+    """
+    if edge == angle[0]:
+        return angle[1]
+    else:
+        return angle[0]
+
+
+def pair_to_other(pair, sample):
+    """
+        Retorna o outro par;
+    """
+    if sample == pair[0]:
+        return pair[1]
+    else:
+        return pair[0]
+
+
 
 def mycallback(model, where):
     """
@@ -192,84 +232,64 @@ def solution_cycles(solution, k, G):
     return cycles, paths
 
 
-def angle_to_common_vertex(angle):
-    """
-        Retorna o vértice em comum entre dois ângulos;
-    """
-    u, v, _ = angle[0]
-    x, y, _ = angle[1]
-    if u == x or u == y:
-        return u
-    else:
-        return v
 
-
-# ACHO QUE DA PRA GENERLIZAR AS TRES FUNÇÔES ABAIXO EM UMA SÓ!!!
-def edge_to_other_vertex(edge, vertex):
+# dúvida, como é formado o ciclo? o primeiro vértice também é o último?
+def cycle_constraint_extended(cycle, w):
     """
-        Retorna o outro vértice de uma aresta;
+        Dado os vértices (v1,v2,v3,...,vk) de um ciclo e as variáveis do PLI (w), 
+        retorna uma condição com todos os ângulos que compõem o ciclo;
     """
-    if vertex == edge[0]:
-        return edge[1]
-    else:
-        return edge[0]
-
-
-def angle_to_other_edge(angle, edge):
-    """
-        Retorna a outra aresta de um ângulo;
-    """
-    if edge == angle[0]:
-        return angle[1]
-    else:
-        return angle[0]
-
-
-def pair_to_other(pair, sample):
-    """
-        Retorna o outro par;
-    """
-    if sample == pair[0]:
-        return pair[1]
-    else:
-        return pair[0]
-
-def cycle_constraint_extended(cycle,w):
-    angles=cycle_to_angles(cycle)
-    constraint=0
+    angles = cycle_to_angles(cycle)
+    constraint = 0
     for angle in angles:
-        constraint=constraint+w[angle]
+        constraint = constraint + w[angle]
     return constraint
 
-def path_constraint(vertices,w):
-    constraint=0
-    l=len(vertices)
-    for i in range(0,l-2):
-        edge1 = pair_to_edge([vertices[i],vertices[i+1]])
-        edge2 = pair_to_edge([vertices[i+1],vertices[i+2]])
-        angle=pair_to_angle([edge1,edge2])
-        constraint=constraint+w[angle]
+
+def path_constraint(vertices, w):
+    """
+        Dado os vértices (v1,v2,v3,...,vk) de um caminho e as variáveis do PLI (w), 
+        retorna uma condição com todos os ângulos que compõem o caminho;
+    """
+    constraint = 0
+    l = len(vertices)
+    for i in range(0, l - 2):
+        edge1 = pair_to_edge([vertices[i], vertices[i+1]])
+        edge2 = pair_to_edge([vertices[i+1], vertices[i+2]])
+        angle = pair_to_angle([edge1, edge2])
+        constraint = constraint + w[angle]
     return constraint
-    
+
+
 def pair_to_edge(pair):
+    """
+        Dado dois vértice, 
+        retorna no formato de aresta onde o primeiro está na primeira posição da tupla 
+            e o segundo na segunda posição;
+    """
     pair.sort()
     return (pair[0],pair[1],None)
 
+
 def cycle_to_angles(cycle):
-    angles=[]
-    for i in range(0,len(cycle)-2):
-        u=cycle[i]
-        v=cycle[i+1]
-        w=cycle[i+2]
-        edge1=pair_to_edge([u,v])
-        edge2=pair_to_edge([v,w])
-        angle=pair_to_angle([edge1,edge2])
+    """
+        Dado um ciclo, 
+        retorna todos os ângulos que compõem o ciclo;
+    """
+    angles = []
+    for i in range(0, len(cycle) - 2):
+        u = cycle[i]
+        v = cycle[i+1]
+        w = cycle[i+2]
+        edge1 = pair_to_edge([u, v])
+        edge2 = pair_to_edge([v, w])
+        angle = pair_to_angle([edge1, edge2])
         angles.append(angle)
-    u=cycle[-2]
-    v=cycle[0]
-    w=cycle[1]
-    edge1=pair_to_edge([u,v])
-    edge2=pair_to_edge([v,w])
-    angle=pair_to_angle([edge1,edge2])
+    u = cycle[-2]
+    v = cycle[0]
+    w = cycle[1]
+    edge1 = pair_to_edge([u, v])
+    edge2 = pair_to_edge([v, w])
+    angle = pair_to_angle([edge1, edge2])
     angles.append(angle)
     return angles
