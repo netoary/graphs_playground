@@ -142,12 +142,32 @@ model.Params.lazyConstraints = 1
 model.optimize(mycallback)
 
 
-
+# DÌVIDA!!!
 def solution_cycles(solution, k, G):
     """
+        A disjoint-set data structure (sometimes called union-find data structure) is a data structure 
+            that keeps track of a partitioning of a set into a number of separate, nonoverlapping sets. 
+            It performs two operations:
+                find() – Determine which set a particular element is in.
+                union() – Combine or merge two sets into a single set.
         ;
 
-        
+        inicialmete temos:
+            - M grupos, um pra cada aresta;  
+            - Um dicionário dic com M chaves, com listas contendo False;
+            - uma lista vazia de ângulos setados
+        E para cada ângulo setado na solução:
+            - unimos os grupos das arestas dos ângulos
+            - adicionamos o ângulos na lista de ângulos setados
+            - adicionamos nas listas das arestas que compõem o ângulo o objeto setted (ângulo)
+
+        # definir sequências
+        sequências são trilhas geradas pelos ângulos setados;
+
+        paths é uma lista de sequências que não repete vértice e tem tamanho maior que k+1
+
+        cycles é uma lista de sequências que repete vértice, partindo do vértice repetido e finalizando no vértice repetido
+
     """
     disjointSet = DisjointSet(G.edges())
     setted_angles = []
@@ -161,6 +181,8 @@ def solution_cycles(solution, k, G):
             dic[setted[0]].append(setted)
             dic[setted[1]].append(setted)
     
+    '''
+    # antigo com "conflito" no "e"
     sequences = []
     for e in dic:
         if len(dic[e]) == 2 and dic[e][0] == False:
@@ -177,11 +199,12 @@ def solution_cycles(solution, k, G):
                 pair = [dic[e][1], dic[e][2]]
                 angle = pair_to_other(pair, angle)
                 e = angle_to_other_edge(angle, e)
+                print(f'entrei no while, que acho que não entra, {e}')
             dic[e][0]=True
             new_vertex = edge_to_other_vertex(e, new_sequence[-1])
             new_sequence.append(new_vertex)
             sequences.append(new_sequence)
-            
+
     for e in dic:
         if dic[e][0] == False:
             dic[e][0] = True
@@ -198,11 +221,51 @@ def solution_cycles(solution, k, G):
                 angle = pair_to_other(pair, angle)
                 e = angle_to_other_edge(angle, e)
             sequences.append(new_sequence)
+    '''
+    sequences = []
+    for i in dic:
+        if len(dic[i]) == 2 and dic[i][0] == False:
+            dic[i][0] = True
+            angle = dic[i][1]
+            common_vertex = angle_to_common_vertex(angle)
+            initial_vertex = edge_to_other_vertex(i, common_vertex)
+            new_sequence = [initial_vertex, common_vertex]
+            e = angle_to_other_edge(angle, i)
+            while len(dic[e]) == 3:
+                dic[e][0] = True
+                new_vertex = edge_to_other_vertex(e, new_sequence[-1])
+                new_sequence.append(new_vertex)
+                pair = [dic[e][1], dic[e][2]]
+                angle = pair_to_other(pair, angle)
+                e = angle_to_other_edge(angle, e)
+                print(f'entrei no while, que acho que não entra, {e}')
+            dic[e][0] = True
+            new_vertex = edge_to_other_vertex(e, new_sequence[-1])
+            new_sequence.append(new_vertex)
+            sequences.append(new_sequence)
+
+    for i in dic:
+        if dic[i][0] == False:
+            dic[i][0] = True
+            angle = dic[i][1]
+            common_vertex = angle_to_common_vertex(angle)
+            initial_vertex = edge_to_other_vertex(i, common_vertex)
+            new_sequence = [initial_vertex, common_vertex]
+            e = angle_to_other_edge(angle, i)
+            while dic[e][0] == False:
+                dic[e][0] = True
+                new_vertex = edge_to_other_vertex(e, new_sequence[-1])
+                new_sequence.append(new_vertex)
+                pair = [dic[e][1], dic[e][2]]
+                angle = pair_to_other(pair, angle)
+                e = angle_to_other_edge(angle, e)
+            sequences.append(new_sequence)
 
     count = []
     cycles = []
     paths = []
     position = []
+    # gerando listas auxiliares
     for v in G.vertices():
         count.append(0)
         position.append(-1)
@@ -225,9 +288,11 @@ def solution_cycles(solution, k, G):
             pos += 1
         if (isPath == True and len(sequence) > (k+1)):
             paths.append(sequence)
+        
+        # limpando
         for u in G.vertices():
             count[u] = 0
-            position[u] =- 1
+            position[u] = -1
 
     return cycles, paths
 
