@@ -4,6 +4,8 @@
     # testar funções
 """
 
+import time
+
 load("utils.sage")
 
 def canonicalDecomposition(G, M = [], petersen = []):
@@ -150,11 +152,10 @@ def full_search(G, cont=0, oldDecompositions=[]):
     # recursion that runs through the graph until it finds a path decomposition
     # returns (moves, True) if it finds, otherwise (moves, False)
     graph = Graph(G)
-    mov=[]
     hangingEdges, hangingEdgesStatus = takeHangingEdges(graph)
     if (hangingEdgesStatus == True):
         cont = cont + 1
-        return cont
+        return cont, True
 
     pMoves = possibleMoves(graph, hangingEdges)
     oldDecompositions.append(graph.edges())
@@ -164,16 +165,48 @@ def full_search(G, cont=0, oldDecompositions=[]):
         if (dec in oldDecompositions):
             unmove(graph, i)
         else:
-            print(i)
             cont = full_search(graph, cont, oldDecompositions)
 
-    return cont
+    return cont, False
 
 
+def search(graph, hangingEdges, mov=[], oldDecompositions=[]):
+    #recursion that runs through the graph until it finds a path decomposition
+    #returns (moves, True) if it finds, otherwise (moves, False)
+    if (hangingEdges == True):
+        return mov, True
+    pMoves = possibleMoves(graph, hangingEdges)
+    var = False
 
-def full_test(G):
-    b = []
-    graphs = []
+    oldDecompositions.append(graph.edges())
+    for i in pMoves:
+        move(graph, i)
+        dec = graph.edges()
+        if (dec in oldDecompositions):
+            unmove(graph, i)
+        else:
+            hanging = takeHangingEdges(graph)
+            mov.append(i)
+            if (hanging == True):
+                return mov, True
+            mov, var = search(graph, hanging, mov, oldDecompositions)
+        if (var==True):
+            return mov, var
+    if (var==False):
+        mov = []
+    return mov, var
+
+
+def brute_test(G, limit = 10):
+    """
+        Dado um Grafo G e um limite de emparelhamentos
+        Retorna um dicionário com duas vezes o limite de dados contendo:
+            A string g6 do grafo, o emparelhamento usado, o tempo 1, o tempo 2, 
+                a profundidade da solução e se resolveu o problema
+    """
+
+    result = {}
+    i = 0
     for M in G.perfect_matchings():
         for i in M:
             G.delete_edge(i)
@@ -181,20 +214,19 @@ def full_test(G):
         for i in M:
             G.add_edge(i)
         H = Graph(G)
+        start_time = time.time()
         H, _ = canonicalDecomposition(H, M, petersen)
-        cont = full_search(H, 0, [])
-        if cont == 1:
-            graphs.append(H)
-        b.append(cont)
+        middle_time = time.time()
+        moves, status = search(H, 0, [], [])
+        final_time = time.time()
+        result[i] = [G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status]
+        i += 1
     
-        aux0 = petersen[0]
-        aux1 = petersen[1]
-        petersen = [aux1, aux0]
+        petersen_reverse = [petersen[1], petersen[0]]
         H = Graph(G)
-        H, _ = canonicalDecomposition(H, M, petersen)
-        cont = full_search(H, 0, [])
-        if cont == 1:
-            graphs.append(H)
-        b.append(cont)
+        H, _ = canonicalDecomposition(H, M, petersen_reverse)
+        moves, status = search(H, 0, [], [])
+        result[i] = [G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status]
+        i += 1
     
-    return b, graphs
+    return result
