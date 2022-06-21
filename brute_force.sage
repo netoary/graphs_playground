@@ -5,6 +5,7 @@
 """
 
 import time
+from copy import deepcopy
 
 load("utils.sage")
 
@@ -170,26 +171,26 @@ def full_search(G, cont=0, oldDecompositions=[]):
     return cont, False
 
 
-def search(graph, hangingEdges, mov=[], oldDecompositions=[]):
+def search(graph, hangingEdges, hangingEdgesStatus, mov=[], oldDecompositions=[]):
     #recursion that runs through the graph until it finds a path decomposition
     #returns (moves, True) if it finds, otherwise (moves, False)
-    if (hangingEdges == True):
+    if (hangingEdgesStatus == True):
         return mov, True
     pMoves = possibleMoves(graph, hangingEdges)
     var = False
-
-    oldDecompositions.append(graph.edges())
+    graph_aux = Graph(graph)
+    oldDecompositions.append(graph_aux.edges())
     for i in pMoves:
         move(graph, i)
         dec = graph.edges()
         if (dec in oldDecompositions):
             unmove(graph, i)
         else:
-            hanging = takeHangingEdges(graph)
+            hangingEdges, hangingEdgesStatus = takeHangingEdges(graph)
             mov.append(i)
-            if (hanging == True):
+            if (hangingEdgesStatus == True):
                 return mov, True
-            mov, var = search(graph, hanging, mov, oldDecompositions)
+            mov, var = search(graph, hangingEdges, hangingEdgesStatus, mov, oldDecompositions)
         if (var==True):
             return mov, var
     if (var==False):
@@ -204,9 +205,7 @@ def brute_test(G, limit = 10):
             A string g6 do grafo, o emparelhamento usado, o tempo 1, o tempo 2, 
                 a profundidade da solução e se resolveu o problema
     """
-
     result = []
-    i = 0
     for M in G.perfect_matchings():
         for i in M:
             G.delete_edge(i)
@@ -217,16 +216,15 @@ def brute_test(G, limit = 10):
         start_time = time.time()
         H, _ = canonicalDecomposition(H, M, petersen)
         middle_time = time.time()
-        moves, status = search(H, 0, [], [])
+        hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
+        moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
         final_time = time.time()
         result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
-        i += 1
     
         petersen_reverse = [petersen[1], petersen[0]]
         H = Graph(G)
         H, _ = canonicalDecomposition(H, M, petersen_reverse)
-        moves, status = search(H, 0, [], [])
+        hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
+        moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
         result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
-        i += 1
-    
     return result

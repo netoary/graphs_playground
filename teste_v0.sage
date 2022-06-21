@@ -5,21 +5,23 @@ load("brute_force.sage")
 def test(path, test_name):
     graphs_file = open(path)
     n = 0
-    brute_dic = []
 
     with open(f'brute_test_{test_name}.csv', 'a') as file:
         brute_dic = ['G6', 'emparelhamento', 'tempo_meio', 'tempo_final', 'qtde_moves', 'resultado']
         for data in brute_dic:
-            if data == datas[-1]:
+            if data == brute_dic[-1]:
                 file.writelines("% s\n" % data)
             else:
                 file.writelines("% s," % data)
 
-    for x in graphs_file:
-        n += 1
-        brute_dic.append(brute_test(graph, 10))
+    brute_dic = []
 
-        if n % 100 == 0:
+    for x in graphs_file: # ['GFzvvW']:
+        n += 1
+        graph = Graph(x)
+        brute_dic = brute_dic + (brute_test(graph, 10))
+        print(brute_dic)
+        if n % 1 == 0:
             with open(f'brute_test_{test_name}.csv', 'a') as file:
                 # file.writelines("\n")
                 # file.writelines("% s," % data if data != datas[-1] else "% s\n" for datas in brute_dic for data in datas)
