@@ -4,6 +4,7 @@
 #!/bin/env sage
 # -*- coding: utf-8 -*-
 import gurobipy as gp
+import time
 from gurobipy import GRB
 
 def is_path_of_length_five(edges):
