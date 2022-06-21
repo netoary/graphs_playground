@@ -205,7 +205,7 @@ def brute_test(G, limit = 10):
                 a profundidade da solução e se resolveu o problema
     """
 
-    result = {}
+    result = []
     i = 0
     for M in G.perfect_matchings():
         for i in M:
@@ -219,14 +219,14 @@ def brute_test(G, limit = 10):
         middle_time = time.time()
         moves, status = search(H, 0, [], [])
         final_time = time.time()
-        result[i] = [G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status]
+        result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
         i += 1
     
         petersen_reverse = [petersen[1], petersen[0]]
         H = Graph(G)
         H, _ = canonicalDecomposition(H, M, petersen_reverse)
         moves, status = search(H, 0, [], [])
-        result[i] = [G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status]
+        result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
         i += 1
     
     return result
