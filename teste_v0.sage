@@ -16,21 +16,17 @@ def test(path, test_name):
 
     brute_dic = []
 
-    for x in graphs_file: # ['GFzvvW']:
+    for x in graphs_file:
         n += 1
         graph = Graph(x)
         brute_dic = brute_dic + (brute_test(graph, 10))
-        print(brute_dic)
         if n % 1 == 0:
             with open(f'brute_test_{test_name}.csv', 'a') as file:
-                # file.writelines("\n")
-                # file.writelines("% s," % data if data != datas[-1] else "% s\n" for datas in brute_dic for data in datas)
                 for datas in brute_dic:
-                    for data in datas:
-                        if data == datas[-1]:
-                            file.writelines("% s\n" % data)
-                        else:
-                            file.writelines("% s," % data)
+                    file.write(str(datas).replace("[","").replace("]",""))
+                    file.write("\n")
+            brute_dic = []
+
 
 test('graphs/5regular8-all.g6', 1)
 

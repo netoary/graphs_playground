@@ -206,6 +206,7 @@ def brute_test(G, limit = 10):
                 a profundidade da solução e se resolveu o problema
     """
     result = []
+    cont_limit = 0
     for M in G.perfect_matchings():
         for i in M:
             G.delete_edge(i)
@@ -223,8 +224,15 @@ def brute_test(G, limit = 10):
     
         petersen_reverse = [petersen[1], petersen[0]]
         H = Graph(G)
+        start_time = time.time()
         H, _ = canonicalDecomposition(H, M, petersen_reverse)
+        middle_time = time.time()
         hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
         moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
+        final_time = time.time()
         result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
+        
+        cont_limit += 1
+        if cont_limit >= limit:
+            return result
     return result
