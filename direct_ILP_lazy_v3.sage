@@ -28,12 +28,12 @@ def mycallback(model, where):
     """
 
     if where == GRB.Callback.MIPSOL:
-        print("entrou no callback")
+        # print("entrou no callback")
 
         vals = model.cbGetSolution(model._x)
 
         dic = {}
-        print(model._numero_de_cores)
+        # print(model._numero_de_cores)
         for c in range(model._numero_de_cores):
             dic[c] = []
             
@@ -45,7 +45,7 @@ def mycallback(model, where):
         
         for c in range(model._numero_de_cores):
             edges = dic[c]
-            print(is_path_of_length_five(edges))
+            # print(is_path_of_length_five(edges))
             if not is_path_of_length_five(edges):
                 equation = 0
                 for e in edges:
@@ -133,7 +133,7 @@ class Model: #(gp.Model):
 
     def solve(self):
 
-        self.model.write("modelo_debug.lp")
+        # self.model.write("modelo_debug.lp")
 
         # ⚠ if you plan to use lazyConstraints in Gurobi,
         #     you must set the following parameter to 1
@@ -157,6 +157,13 @@ class Model: #(gp.Model):
         G.show(color_by_label=True, layout="circular")
 
 #G=graphs.RandomRegular(5,10)
-#m = Model(G)
-#m.solve()
+def solve_direct_callback(G):
+    start_time = time.time()
+    m = Model(G)
+    middle_time = time.time()
+    m.solve()
+    final_time = time.time()
+    # como vou saber que não temos solução?
+    status = True
+    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status]
 #m.show()
