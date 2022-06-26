@@ -161,10 +161,13 @@ class Model: #(gp.Model):
 def solve_direct_callback(G):
     start_time = time.time()
     m = Model(G)
-    middle_time = time.time()
-    m.solve()
-    final_time = time.time()
-    # como vou saber que não temos solução?
     status = True
+    middle_time = time.time()
+    try:
+        m.solve()
+    except:
+        status = False
+    final_time = time.time()
+
     return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status]
 #m.show()

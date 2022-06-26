@@ -393,10 +393,12 @@ class Model: #(gp.Model):
 def set_angle_model(G):
     start_time = time.time()
     m = Model(G)
+    status = True
     middle_time = time.time()
-    m.solve()
+    try:
+        m.solve()
+    except:
+        status = False
     final_time = time.time()
 
-    # como vou saber que não temos solução?
-    status = True
     return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status]
