@@ -11,7 +11,7 @@ def test_brute_froce(path, test_name, step = 10):
         n = 0
 
         with open(f'tests/brute_test_{test_name}.csv', 'a') as file:
-            brute_dic = ['G6', 'emparelhamento', 'tempo_meio', 'tempo_final', 'qtde_moves', 'resultado']
+            brute_dic = ['G6', 'emparelhamento', 'canonical_time', 'solve_time', 'qtde_moves', 'resultado']
             file.write(str(brute_dic).replace("[","").replace("]",""))
             file.write("\n")
 
@@ -39,7 +39,7 @@ def test_direct_ilp(path, test_name, step = 10):
         n = 0
 
         with open(f'tests/direct_ilp_test_{test_name}.csv', 'a') as file:
-            direct_dic = ['G6', 'tempo_meio', 'tempo_final', 'resultado']
+            direct_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado']
             file.write(str(direct_dic).replace("[","").replace("]",""))
             file.write("\n")
 
@@ -67,7 +67,7 @@ def test_direct_ilp_callback(path, test_name, step = 10):
         n = 0
 
         with open(f'tests/direct_ilp_callback_test_{test_name}.csv', 'a') as file:
-            direct_dic = ['G6', 'tempo_meio', 'tempo_final', 'resultado']
+            direct_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado']
             file.write(str(direct_dic).replace("[","").replace("]",""))
             file.write("\n")
 
@@ -95,7 +95,7 @@ def test_angle_ilp_callback(path, test_name, step = 10):
         n = 0
 
         with open(f'tests/angle_ilp_callback_test_{test_name}.csv', 'a') as file:
-            angle_dic = ['G6', 'tempo_meio', 'tempo_final', 'resultado']
+            angle_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado']
             file.write(str(angle_dic).replace("[","").replace("]",""))
             file.write("\n")
 
@@ -126,18 +126,25 @@ test_angle_ilp_callback('graphs/5regular8-all.g6', 1, 1)
 '''
 
 
-'''
-directory = 'graphs/'
+
+directory = '../grafos/'
 for filename in os.listdir(directory):
     path = directory+filename
-'''
+    break_test = ['5regular14-all', 'regular-sample.g6', 'sample18.g6', 'sample24.g6']
+    # break_test.append('5regular12-all.g6')
+    if filename not in break_test:
+        test_direct_ilp_callback(path, filename, 10)
+        test_angle_ilp_callback(path, filename, 10)
+        print(path)
 
+
+'''
 def test_direct_ilp2(path, test_name, step = 10):
     with open(path, 'r') as graphs_file:
         n = 0
 
         with open(f'direct_ilp_test_{test_name}.csv', 'a') as file:
-            direct_dic = ['G6', 'tempo_meio', 'tempo_final', 'resultado']
+            direct_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado']
             file.write(str(direct_dic).replace("[","").replace("]",""))
             file.write("\n")
 
@@ -159,4 +166,5 @@ def test_direct_ilp2(path, test_name, step = 10):
                 file.write("\n")
         direct_dic = []
 
-test_direct_ilp2('graphs/5regular8-all.g6', 2, 1)
+#test_direct_ilp2('graphs/5regular8-all.g6', 2, 1)
+'''
