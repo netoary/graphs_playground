@@ -220,7 +220,7 @@ def brute_test(G, limit = 10):
         hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
         moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
         final_time = time.time()
-        result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
+        result.append([G.graph6_string(), str(list(M)).replace(",","-"), middle_time - start_time, final_time - middle_time, len(moves), status])
     
         petersen_reverse = [petersen[1], petersen[0]]
         H = Graph(G)
@@ -230,7 +230,7 @@ def brute_test(G, limit = 10):
         hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
         moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
         final_time = time.time()
-        result.append([G.graph6_string(), M, middle_time - start_time, final_time - middle_time, len(moves), status])
+        result.append([G.graph6_string(), str(list(M)).replace(",","-"), middle_time - start_time, final_time - middle_time, len(moves), status])
         
         cont_limit += 1
         if cont_limit >= limit:

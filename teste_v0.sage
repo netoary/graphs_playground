@@ -12,7 +12,7 @@ def test_brute_froce(path, test_name, step = 10):
 
         with open(f'tests/brute_test_{test_name}.csv', 'a') as file:
             brute_dic = ['G6', 'emparelhamento', 'canonical_time', 'solve_time', 'qtde_moves', 'resultado']
-            file.write(str(brute_dic).replace("[","").replace("]",""))
+            file.write(str(brute_dic).replace("[","").replace("]","").replace("'","").replace(" ",""))
             file.write("\n")
 
         brute_dic = []
@@ -24,12 +24,14 @@ def test_brute_froce(path, test_name, step = 10):
             if n % step == 0:
                 with open(f'tests/brute_test_{test_name}.csv', 'a') as file:
                     for datas in brute_dic:
-                        file.write(str(datas).replace("[","").replace("]",""))
+                        #print(datas)
+                        file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
                         file.write("\n")
                 brute_dic = []
         with open(f'tests/brute_test_{test_name}.csv', 'a') as file:
             for datas in brute_dic:
-                file.write(str(datas).replace("[","").replace("]",""))
+                #print(datas)
+                file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
                 file.write("\n")
         brute_dic = []
 
@@ -123,8 +125,8 @@ test_brute_froce('graphs/5regular8-all.g6', 1, 1)
 test_direct_ilp('graphs/5regular8-all.g6', 1, 1)
 test_direct_ilp_callback('graphs/5regular8-all.g6', 1, 1)
 test_angle_ilp_callback('graphs/5regular8-all.g6', 1, 1)
+test_brute_froce('../grafos/5regular8-all.g6', 'emp_M', 1)
 '''
-
 
 
 directory = '../grafos/'
