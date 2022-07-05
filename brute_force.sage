@@ -198,6 +198,64 @@ def search(graph, hangingEdges, hangingEdgesStatus, mov=[], oldDecompositions=[]
     return mov, var
 
 
+def search_s1(graph, hangingEdges, hangingEdgesStatus, mov=[], oldDecompositions=[], max_depth=[]):
+    #recursion that runs through the graph until it finds a path decomposition
+    #returns (moves, True) if it finds, otherwise (moves, False)
+    # Retorna em moves a profundidade da solução
+    if (hangingEdgesStatus == True):
+        return mov, True, max_depth
+    pMoves = possibleMoves(graph, hangingEdges)
+    var = False
+    graph_aux = Graph(graph)
+    oldDecompositions.append(graph_aux.edges())
+    for i in pMoves:
+        graph_aux = Graph(graph)
+        move(graph_aux, i)
+        dec = graph_aux.edges()
+        if (dec in oldDecompositions):
+            unmove(graph_aux, i)
+        else:
+            hangingEdges, hangingEdgesStatus = takeHangingEdges(graph_aux)
+            mov.append(i)
+            max_depth.append(len(mov))
+            if (hangingEdgesStatus == True):
+                return mov, True, max_depth
+            mov, var, max_depth = search_s1(graph_aux, hangingEdges, hangingEdgesStatus, mov, oldDecompositions, max_depth)
+            if (var==True):
+                return mov, var, max_depth
+            else:
+                _ = mov.pop()
+    return mov, var, max_depth
+
+
+def search_s2(graph, hangingEdges, hangingEdgesStatus, mov=[], oldDecompositions=[], max_depth=[]):
+    #recursion that runs through the graph until it finds a path decomposition
+    #returns (moves, True) if it finds, otherwise (moves, False)
+    # Retorna em moves a profundidade da solução
+    if (hangingEdgesStatus == True):
+        return mov, True, max_depth
+    pMoves = possibleMoves(graph, hangingEdges)
+    var = False
+    graph_aux = Graph(graph)
+    oldDecompositions.append(graph_aux.edges())
+    for i in pMoves:
+        move(graph, i)
+        dec = graph.edges()
+        if (dec not in oldDecompositions):
+            hangingEdges, hangingEdgesStatus = takeHangingEdges(graph)
+            mov.append(i)
+            max_depth.append(len(mov))
+            if (hangingEdgesStatus == True):
+                return mov, True, max_depth
+            mov, var, max_depth = search_s2(graph, hangingEdges, hangingEdgesStatus, mov, oldDecompositions, max_depth)
+            if (var==True):
+                return mov, var, max_depth
+            else:
+                _ = mov.pop()
+        unmove(graph, i)
+    return mov, var, max_depth
+
+
 def brute_test(G, limit = 10):
     """
         Dado um Grafo G e um limite de emparelhamentos
@@ -218,9 +276,13 @@ def brute_test(G, limit = 10):
         H, _ = canonicalDecomposition(H, M, petersen)
         middle_time = time.time()
         hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
-        moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
+        moves, status, depth = search_s2(H, hangingEdges, hangingEdgesStatus, [], [], [])
         final_time = time.time()
-        result.append([G.graph6_string(), str(list(M)).replace(",","-"), middle_time - start_time, final_time - middle_time, len(moves), status])
+        if depth == []:
+            max_depth = 0
+        else:
+            max_depth = max(depth)
+        result.append([G.graph6_string(), str(list(M)).replace(",","-"), middle_time - start_time, final_time - middle_time, len(moves), status, max_depth])
     
         petersen_reverse = [petersen[1], petersen[0]]
         H = Graph(G)
@@ -228,9 +290,13 @@ def brute_test(G, limit = 10):
         H, _ = canonicalDecomposition(H, M, petersen_reverse)
         middle_time = time.time()
         hangingEdges, hangingEdgesStatus = takeHangingEdges(H)
-        moves, status = search(H, hangingEdges, hangingEdgesStatus, [], [])
+        moves, status, depth = search_s2(H, hangingEdges, hangingEdgesStatus, [], [], [])
         final_time = time.time()
-        result.append([G.graph6_string(), str(list(M)).replace(",","-"), middle_time - start_time, final_time - middle_time, len(moves), status])
+        if depth == []:
+            max_depth = 0
+        else:
+            max_depth = max(depth)
+        result.append([G.graph6_string(), str(list(M)).replace(",","-"), middle_time - start_time, final_time - middle_time, len(moves), status, max_depth])
         
         cont_limit += 1
         if cont_limit >= limit:
