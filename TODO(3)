@@ -459,23 +459,30 @@ TESTES
 
 
 GRUPOS DE TESTE (5-regular)
-	- todos com 8 vértices
-	- todos com 10 vértices
-	- todos com 12 vértices
-	- todos bipartidos com 14 vértices - nauty-geng 14 -bd5D5 > 5reg_bipartite_14.g6
-	- todos bipartidos com 16 vértices - nauty-geng 16 -bd5D5 > 5reg_bipartite_16.g6
-	- todos bipartidos com 18 vértices - nauty-geng 18 -bd5D5 > 5reg_bipartite_18.g6
-	- todos bipartidos com 20 vértices - nauty-geng 20 -bd5D5 > 5reg_bipartite_20.g6
-	- todos planares com 22 vértices
-	- todos planares com 24 vértices
-	- todos planares com 26 vértices
-	- todos planares com 28 vértices
-	- x grafos com 100 vértices  - nauty-genrang -g -d5 100 100 > 5reg_100.g6
-	- x grafos com 1000 vértices - nauty-genrang -g -d5 1000 100 > 5reg_1000.g6
-	- x grafos com 10000 vértices - nauty-genrang -g -d5 10000 100 > 5reg_10000.g6
-	- x grafos com 100000 vértices - nauty-genrang -g -d5 100000 50 > 5reg_100000.g6
+	- todos com 8 vértices - nauty-geng 8 -d5D5 > 5regular8-all.g6 (3)
+	- todos com 10 vértices - nauty-geng 10 -d5D5 > 5regular10-all.g6 (60)
+	- todos com 12 vértices - nauty-geng 12 -d5D5 > 5regular12-all.g6 (7848)
+	- todos bipartidos com 14 vértices - nauty-geng 14 -bd5D5 > 5reg_bipartite_14.g6 (4)
+	- todos bipartidos com 16 vértices - nauty-geng 16 -bd5D5 > 5reg_bipartite_16.g6 (41)
+	- todos bipartidos com 18 vértices - nauty-geng 18 -bd5D5 > 5reg_bipartite_18.g6 (1981)
+	- todos bipartidos com 20 vértices - nauty-geng 20 -bd5D5 > 5reg_bipartite_20.g6 (304496)
+	- todos planares com 14 vértices - ./plantri -g -m5 -p 14 5reg_planar_14.g6 (1)
+	- todos planares com 16 vértices - ./plantri -g -m5 -p 16 5reg_planar_16.g6 (5)
+	- todos planares com 18 vértices - ./plantri -g -m5 -p 18 5reg_planar_18.g6 (30)
+	- todos planares com 20 vértices - ./plantri -g -m5 -p 20 5reg_planar_20.g6 (392)
+	- todos planares com 22 vértices - ./plantri -g -m5 -p 22 5reg_planar_22.g6 (7657)
+	- todos planares com 24 vértices - ./plantri -g -m5 -p 24 5reg_planar_24.g6 (180444)
+	- todos planares com 26 vértices - ./plantri -g -m5 -p 26 5reg_planar_26.g6 (4532719)
+	- todos planares com 28 vértices - (X)
+	- x grafos com 100 vértices  - nauty-genrang -g -d5 100 100 > 5reg_100.g6 (100)
+	- x grafos com 1000 vértices - nauty-genrang -g -d5 1000 100 > 5reg_1000.g6 (100)
+	- x grafos com 10000 vértices - nauty-genrang -g -d5 10000 100 > 5reg_10000.g6 (100)
+	- x grafos com 100000 vértices - nauty-genrang -g -d5 100000 50 > 5reg_100000.g6 (X)
 
+faz sentido termos amostra de grafos grandes (número de vértices) bipartidos e planares??
 
+no sage:
+graphs.RandomRegularBipartite()
 
 PROJETO DE TCC
 
