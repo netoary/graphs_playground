@@ -2,7 +2,7 @@ import os
 import time
 import logging
 test_name = time.strftime("_%Y_%m_%d_%H")
-logging.basicConfig(filename=f'teste{test_name}.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename=f'logs/teste{test_name}.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 
 load("brute_force.sage")
 load("direct_ILP_v2.sage")
