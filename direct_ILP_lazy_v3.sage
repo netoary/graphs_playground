@@ -29,7 +29,9 @@ def mycallback(model, where):
     """
 
     if where == GRB.Callback.MIPSOL:
-        # print("entrou no callback")
+        model._cont += 1
+        if model._cont % 100 == 0:
+            print(model._cont)
 
         vals = model.cbGetSolution(model._x)
 
@@ -64,6 +66,7 @@ class Model: #(gp.Model):
         
         self.G = G
         self.model._numero_de_cores = G.size()/5
+        self.model._cont = 0
         self._init_x_variables()
 
         # The next lines are defining some variables inside the model object so
@@ -156,6 +159,11 @@ class Model: #(gp.Model):
                 if self.x[u,v,c].x >0.1:
                     G.set_edge_label(u,v,c)
         G.show(color_by_label=True, layout="circular")
+    
+    @property
+    def cont(self):
+        return self.model._cont
+
 
 #G=graphs.RandomRegular(5,10)
 def solve_direct_callback(G):
@@ -169,5 +177,5 @@ def solve_direct_callback(G):
         status = False
     final_time = time.time()
 
-    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status]
+    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status, m.cont]
 #m.show()

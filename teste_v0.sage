@@ -82,6 +82,7 @@ def test_direct_ilp_callback(path, test_name, step = 10):
 
         for x in graphs_file:
             n += 1
+            print(x)
             graph = Graph(x)
             direct_dic.append(solve_direct_callback(graph))
             if n % step == 0:
@@ -139,7 +140,7 @@ test_angle_ilp_callback('graphs/5regular8-all.g6', 1, 1)
 test_brute_froce('../grafos/5regular8-all.g6', 'emp_M', 1)
 '''
 
-def run_test(test_type='outro', limit=100, verbose=False):
+def run_test(test_type='small', graphs=['brute'], limit=100):
     directory = '../grafos/'
     for filename in os.listdir(directory):
         path = directory+filename
@@ -151,24 +152,39 @@ def run_test(test_type='outro', limit=100, verbose=False):
             break_test = ['5reg_planar_16.g6', '5reg_planar_18.g6', '5reg_planar_20.g6', '5reg_planar_22.g6', '5reg_planar_24.g6', '5reg_planar_26.g6']
         elif (test_type == 'big'):
             break_test = ['5reg_100.g6', '5reg_1000.g6', '5reg_10000.g6']
-        else:
+        elif (test_type == 'small'):
             break_test = ['5regular8-all.g6']
+        else:
+            break_test = test_type
         if filename in break_test:
             csv_name = filename.replace(".", "_") + time.strftime("_%Y_%m_%d_%H")
-            print(f"Comecou forca bruta: {csv_name}!")
-            logging.info(f'Comecou forca bruta: {filename}')
-            test_brute_froce(path, csv_name, limit)
-            logging.info(f'Concluiu forca bruta: {filename}')
+            if 'brute' in graphs:
+                print(f"Comecou forca bruta: {csv_name}!")
+                logging.info(f'Comecou forca bruta: {filename}')
+                test_brute_froce(path, csv_name, limit)
+                logging.info(f'Concluiu forca bruta: {filename}')
 
-            print(f"Comecou ILP direto: {csv_name}!")
-            logging.info(f'Comecou ILP direto: {filename}')
-            test_direct_ilp_callback(path, csv_name, limit)
-            logging.info(f'Concluiu ILP direto: {filename}')
+            if 'direct' in graphs:
+                print(f"Comecou ILP direto: {csv_name}!")
+                logging.info(f'Comecou ILP direto: {filename}')
+                test_direct_ilp_callback(path, csv_name, limit)
+                logging.info(f'Concluiu ILP direto: {filename}')
 
-            print(f"Comecou ILP angulo: {csv_name}!")
-            logging.info(f'Comecou ILP angulo: {filename}')
-            test_angle_ilp_callback(path, csv_name, limit)
-            logging.info(f'Concluiu ILP angulo: {filename}')
+            if 'angle' in graphs:
+                print(f"Comecou ILP angulo: {csv_name}!")
+                logging.info(f'Comecou ILP angulo: {filename}')
+                test_angle_ilp_callback(path, csv_name, limit)
+                logging.info(f'Concluiu ILP angulo: {filename}')
+
+
+def run_direct(filename='5regular8-all.g6', limit=100):
+    directory = '../grafos/'
+    path = directory+filename
+    csv_name = filename.replace(".", "_") + time.strftime("_%Y_%m_%d_%H")
+    print(f"Comecou ILP direto: {csv_name}!")
+    logging.info(f'Comecou ILP direto: {filename}')
+    test_direct_ilp_callback(path, csv_name, limit)
+    logging.info(f'Concluiu ILP direto: {filename}')
 
 
 '''
