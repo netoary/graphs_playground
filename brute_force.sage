@@ -5,6 +5,7 @@
 """
 
 import time
+import random
 from copy import deepcopy
 
 load("utils.sage")
@@ -238,6 +239,8 @@ def search_s2(graph, hangingEdges, hangingEdgesStatus, mov=[], oldDecompositions
     var = False
     graph_aux = Graph(graph)
     oldDecompositions.append(graph_aux.edges())
+    if len(oldDecompositions) >= 100:
+        return mov, var, max_depth
     for i in pMoves:
         move(graph, i)
         dec = graph.edges()
