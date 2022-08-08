@@ -46,7 +46,7 @@ def test_direct_ilp(path, test_name, step = 10):
         n = 0
 
         with open(f'../resultados/direct_ilp_test_{test_name}.csv', 'a') as file:
-            direct_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado']
+            direct_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado', 'contador']
             file.write(str(direct_dic).replace("[","").replace("]",""))
             file.write("\n")
 
