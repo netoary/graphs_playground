@@ -30,10 +30,10 @@ def mycallback(model, where):
 
     if where == GRB.Callback.MIPSOL:
         model._cont += 1
-        if model._cont % 1000 == 0:
-            print(model._cont)
-            print('break')
-            model.terminate()
+        #if model._cont > 1000 == 0:
+            #print(model._cont)
+            #print('break')
+            #model.terminate()
         #print('call')
         vals = model.cbGetSolution(model._x)
 
@@ -185,8 +185,8 @@ def solve_direct_callback(G):
     final_time = time.time()
     #contador = m.cont
     contador = m.get_cont()
-    if contador >= 1000:
-        print(contador)
-        status = False
+    #if contador >= 1000:
+    #    print(contador)
+    #    status = False
     return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status, contador] #, m._cont]
 #m.show()
