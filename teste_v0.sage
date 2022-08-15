@@ -28,14 +28,16 @@ def test_brute_froce(path, test_name, step = 10):
             if n % step == 0:
                 with open(f'../resultados/brute_test_{test_name}.csv', 'a') as file:
                     for datas in brute_dic:
-                        file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                         file.write("\n")
                 brute_dic = []
                 print(n)
                 logging.info(f'{n} -> {test_name}')
         with open(f'../resultados/brute_test_{test_name}.csv', 'a') as file:
             for datas in brute_dic:
-                file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                 file.write("\n")
         brute_dic = []
         logging.info(f'{n} -> {test_name}')
@@ -59,12 +61,14 @@ def test_direct_ilp(path, test_name, step = 10):
             if n % 1 == 0:
                 with open(f'../resultados/direct_ilp_test_{test_name}.csv', 'a') as file:
                     for datas in direct_dic:
-                        file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                         file.write("\n")
                 direct_dic = []
         with open(f'../resultados/direct_ilp_test_{test_name}.csv', 'a') as file:
             for datas in direct_dic:
-                file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                 file.write("\n")
         direct_dic = []
 
@@ -88,14 +92,16 @@ def test_direct_ilp_callback(path, test_name, step = 10):
             if n % step == 0:
                 with open(f'../resultados/direct_ilp_callback_test_{test_name}.csv', 'a') as file:
                     for datas in direct_dic:
-                        file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                         file.write("\n")
                 direct_dic = []
                 print(n)
                 logging.info(f'{n} -> {test_name}')
         with open(f'../resultados/direct_ilp_callback_test_{test_name}.csv', 'a') as file:
             for datas in direct_dic:
-                file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                 file.write("\n")
         direct_dic = []
         logging.info(f'{n} -> {test_name}')
@@ -119,14 +125,16 @@ def test_angle_ilp_callback(path, test_name, step = 10):
             if n % step == 0:
                 with open(f'../resultados/angle_ilp_callback_test_{test_name}.csv', 'a') as file:
                     for datas in angle_dic:
-                        file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                         file.write("\n")
                 angle_dic = []
                 print(n)
                 logging.info(f'{n} -> {test_name}')
         with open(f'../resultados/angle_ilp_callback_test_{test_name}.csv', 'a') as file:
             for datas in angle_dic:
-                file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
                 file.write("\n")
         angle_dic = []
         logging.info(f'{n} -> {test_name}')
