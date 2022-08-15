@@ -1,10 +1,13 @@
 # https://www.gurobi.com/documentation/9.5/examples/mip1_py.html#subsubsection:mip1.py
 # https://www.linkedin.com/pulse/como-utilizar-fun%C3%A7%C3%A3o-callback-gurobi-igor-gir%C3%A3o
+# https://www.w3schools.com/python/python_try_except.asp
+# https://docs.python.org/3/library/exceptions.html
 
 #!/bin/env sage
 # -*- coding: utf-8 -*-
 import gurobipy as gp
 import time
+import os
 from gurobipy import GRB
 
 def is_path_of_length_five(edges):
@@ -29,14 +32,19 @@ def mycallback(model, where):
     """
 
     if where == GRB.Callback.MIPSOL:
-        model._cont += 1
-        #if model._cont > 1000 == 0:
-            #print(model._cont)
-            #print('break')
-            #model.terminate()
-        #print('call')
-        vals = model.cbGetSolution(model._x)
+        total_memory, used_memory, _ = map(int, os.popen('free -t -m').readlines()[-1].split()[1:]) 
+        if used_memory/total_memory > 0.76:
+            model._break_type = 'memory'
+            model.terminate()
 
+        if model._cont > 10000:
+            model._break_type = 'iteration'
+            model.terminate()
+        
+        vals = model.cbGetSolution(model._x)
+        
+        model._cont += 1
+        
         dic = {}
         # print(model._numero_de_cores)
         for c in range(model._numero_de_cores):
@@ -70,6 +78,7 @@ class Model: #(gp.Model):
         # self._cont = 0
         self.model._numero_de_cores = G.size()/5
         self.model._cont = 0
+        self.model._break_type = None
         self._init_x_variables()
 
         # The next lines are defining some variables inside the model object so
@@ -167,6 +176,9 @@ class Model: #(gp.Model):
     def get_cont(self):
         return self.model._cont
 
+    def get_break_type(self):
+        return self.model._break_type
+
     @property
     def cont(self):
         return self.model._cont
@@ -178,15 +190,25 @@ def solve_direct_callback(G):
     m = Model(G)
     status = True
     middle_time = time.time()
-    try:
-        m.solve()
-    except:
-        status = False
-    final_time = time.time()
-    #contador = m.cont
-    contador = m.get_cont()
-    #if contador >= 1000:
-    #    print(contador)
-    #    status = False
-    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status, contador] #, m._cont]
+    total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:]) 
+    print("RAM memory % used:", used_memory/total_memory)
+    if used_memory/total_memory < 0.71:
+        try:
+            m.solve()
+        except:
+            status = False
+        final_time = time.time()
+        contador = m.get_cont()
+        break_type = m.get_break_type()
+        if break_type == 'iteration':
+            print('iteration')
+            status = None 
+        elif break_type == 'memory':
+            print('memory')
+            status = None 
+    else:
+        final_time = time.time()
+        status = None
+        contador = -1
+    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status, contador, break_type] #, m._cont]
 #m.show()
