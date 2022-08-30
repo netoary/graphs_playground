@@ -6,7 +6,6 @@
 #!/bin/env sage
 # -*- coding: utf-8 -*-
 import gurobipy as gp
-import psutil 
 import time
 import os
 from gurobipy import GRB
@@ -31,12 +30,17 @@ def mycallback(model, where):
       ∑ x_{e, 0} ≤ |E(C)| - 1
     e ∈ E(C)
     """
-
+#    print("parâmetros do gurobi: ",where, GRB.Callback.MIPSOL)
+        
     if where == GRB.Callback.MIPSOL:
 
+    #total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:]) 
         if model._cont % 100 == 0:
             percentage_used_memory = psutil.virtual_memory()[2]
             print("memória usada: ", percentage_used_memory)
+
+    
+#        if used_memory/total_memory > 0.76:
             if percentage_used_memory > 76:
                 model._break_type = 'memory'
                 model.terminate()
@@ -47,6 +51,7 @@ def mycallback(model, where):
         
         vals = model.cbGetSolution(model._x)
         
+#        print("vai atualizar o contador")
         model._cont += 1
         
         dic = {}
@@ -91,10 +96,15 @@ class Model: #(gp.Model):
         # suggested by the Gurubi Another solution would be to define global
         # variables.
         self.model._x = self.x
+        self.model._y = self.y
         self.model._G = self.G
 
         self._add_constr_vertex_degree()
         self._add_constr_number_of_edges_of_each_color()
+        self._add_constr_six_vertices_to_each_color()
+        self._add_constr_one_color_to_each_edge()
+        self._add_constr_each_vertex_is_in_precisely_three_colors()
+        self._add_constr_vertex_degree_colors_with_end()
 
 
     def _init_x_variables(self):
@@ -105,6 +115,15 @@ class Model: #(gp.Model):
         """
         indices = [(u, v, c) for u, v, label in self.G.edges() for c in range(self.model._numero_de_cores)]
         self.x = self.model.addVars(indices, lb=0.0, ub=1.0, vtype=GRB.BINARY, name="x")
+        self.model.update()
+        
+        """
+                ⎧1,  if u ∈ V(G) sees the color c
+        y_u,c = ⎨
+                ⎩0,  otherwise 
+        """
+        indices = [(u, c) for u in self.G.vertices() for c in range(self.model._numero_de_cores)]
+        self.y = self.model.addVars(indices, lb=0.0, ub=1.0, vtype=GRB.BINARY, name="x")
         self.model.update()
 
 
@@ -148,6 +167,42 @@ class Model: #(gp.Model):
                 equation += self.x[a, b, c]
 
             self.model.addConstr(equation==1, name='each edge has one color')
+        self.model.update()
+
+    def _add_constr_six_vertices_to_each_color(self):
+        """
+        Every color sees precisely six vertices
+        """
+        for c in range(self.model._numero_de_cores):
+            equation = 0
+            for u in self.G.vertices():
+                equation += self.y[u,c]
+            self.model.addConstr(equation==6, name='each color has six ends')
+        self.model.update()
+        
+    def _add_constr_each_vertex_is_in_precisely_three_colors(self):
+        """
+        Each vertex is in three colors
+        """
+        for u in self.G.vertices():
+            equation = 0
+            for c in range(self.model._numero_de_cores):
+                equation += self.y[u,c]
+            self.model.addConstr(equation==3, name='each vertex is in precisely three colors')
+        self.model.update()
+        
+    def _add_constr_vertex_degree_colors_with_end(self):
+        """
+        If u is in of c, then d_c(u) >= 1, otherwise d_c(u) = 0
+        """
+        for u in self.G.vertices():
+            for c in range(self.model._numero_de_cores):
+                equation = 0
+                for e in self.G.edges_incident(u):
+                    a, b, _ = e
+                    equation += self.x[a,b,c]
+            self.model.addConstr(equation>=self.y[u,c], name='each vertex has one edge of color c if it is in color c')
+            self.model.addConstr(equation<=5*self.y[u,c], name='each vertex has one edge of color c if it is in color c')
         self.model.update()
 
 
@@ -197,9 +252,11 @@ def solve_direct_callback(G):
     total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:]) 
     print("RAM memory % used:", used_memory/total_memory)
     if used_memory/total_memory < 0.71:
+        print("há memória suficiente, vamos tentar rodar")
         try:
             m.solve()
         except:
+            print("deu pau no m.solve()")
             status = False
         final_time = time.time()
         contador = m.get_cont()
