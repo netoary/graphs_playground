@@ -7,6 +7,7 @@ logging.basicConfig(filename=f'logs/teste{test_name}.log', encoding='utf-8', lev
 load("brute_force.sage")
 load("direct_ILP_v2.sage")
 load("direct_ILP_lazy_v3.sage")
+load("direct_ILP_lazy_v4.sage")
 load("angle_ILP_lazy_v1.sage")
 
 
@@ -140,6 +141,40 @@ def test_angle_ilp_callback(path, test_name, step = 10):
         logging.info(f'{n} -> {test_name}')
 
 
+def test_direct_ilp_callback_v4(path, test_name, step = 10):
+    with open(path, 'r') as graphs_file:
+        n = 0
+
+        with open(f'../resultados/direct_ilp_callback_v4_test_{test_name}.csv', 'a') as file:
+            direct_dic = ['G6', 'PLI_create_time', 'solve_time', 'result', 'counter', 'break_type']
+            file.write(str(direct_dic).replace("[","").replace("]","").replace("'","").replace(" ",""))
+            file.write("\n")
+
+        direct_dic = []
+
+        for x in graphs_file:
+            n += 1
+            print(x)
+            graph = Graph(x)
+            direct_dic.append(solve_direct_callback_v4(graph))
+            if n % step == 0:
+                with open(f'../resultados/direct_ilp_callback_v4_test_{test_name}.csv', 'a') as file:
+                    for datas in direct_dic:
+                        # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                        file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
+                        file.write("\n")
+                direct_dic = []
+                print(n)
+                logging.info(f'{n} -> {test_name}')
+        with open(f'../resultados/direct_ilp_callback_v4_test_{test_name}.csv', 'a') as file:
+            for datas in direct_dic:
+                # file.write(str(datas).replace("[","").replace("]","").replace("'","").replace(" ",""))
+                file.write(str(datas)[1:-1].replace("'","").replace(" ",""))
+                file.write("\n")
+        direct_dic = []
+        logging.info(f'{n} -> {test_name}')
+
+
 '''
 test_brute_froce('graphs/5regular8-all.g6', 1, 1)
 test_direct_ilp('graphs/5regular8-all.g6', 1, 1)
@@ -182,6 +217,12 @@ def run_test(test_type='small', graphs=['brute'], limit=100):
                 print(f"Comecou ILP angulo: {csv_name}!")
                 logging.info(f'Comecou ILP angulo: {filename}')
                 test_angle_ilp_callback(path, csv_name, limit)
+                logging.info(f'Concluiu ILP angulo: {filename}')
+
+            if 'direct_v4' in graphs:
+                print(f"Comecou ILP angulo: {csv_name}!")
+                logging.info(f'Comecou ILP angulo: {filename}')
+                test_direct_ilp_callback_v4(path, csv_name, limit)
                 logging.info(f'Concluiu ILP angulo: {filename}')
 
 

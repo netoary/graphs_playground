@@ -244,7 +244,7 @@ class Model: #(gp.Model):
 
 
 #G=graphs.RandomRegular(5,10)
-def solve_direct_callback(G):
+def solve_direct_callback_v4(G):
     start_time = time.time()
     m = Model(G)
     status = True
