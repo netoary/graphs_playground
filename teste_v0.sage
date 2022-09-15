@@ -113,7 +113,7 @@ def test_angle_ilp_callback(path, test_name, step = 10):
         n = 0
 
         with open(f'../resultados/angle_ilp_callback_test_{test_name}.csv', 'a') as file:
-            angle_dic = ['G6', 'PLI_create_time', 'solve_time', 'resultado']
+            angle_dic = ['G6', 'PLI_create_time', 'solve_time', 'result', 'counter', 'break_type']
             file.write(str(angle_dic).replace("[","").replace("]","").replace("'","").replace(" ",""))
             file.write("\n")
 

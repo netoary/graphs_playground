@@ -8,17 +8,30 @@ def cluster_type(value):
             return i
 
 
-df_brute_test_12_all = pd.read_csv("tests/brute_test_5regular12-all.g6.csv")
+def cluster_type2(args):
+    print(INTERVAL_STEP)
+    value = args['tempo_total']
+    step = args['step']
+    print(value, step)
+    for i in range(INTERVAL_STEP):
+        print(i)
+        if value < (i + 1) * step:
+            step = args['0']
+            return i
+    return i+1
+
+
+df_brute_test_12_all = pd.read_csv("../tests/brute_test_5regular12-all.g6.csv")
 
 df_brute_test_12_all['tempo_total'] = df_brute_test_12_all['canonical_time'] + df_brute_test_12_all['solve_time']
 
 
-df_ilp_direct_test_12_all = pd.read_csv("tests/direct_ilp_callback_test_5regular12-all.g6.csv")
+df_ilp_direct_test_12_all = pd.read_csv("../tests/direct_ilp_callback_test_5regular12-all.g6.csv")
 
 df_ilp_direct_test_12_all['tempo_total'] = df_ilp_direct_test_12_all['PLI_create_time'] + df_ilp_direct_test_12_all['solve_time']
 
 
-df_ilp_angle_test_12_all = pd.read_csv("tests/angle_ilp_callback_test_5regular12-all.g6.csv")
+df_ilp_angle_test_12_all = pd.read_csv("../tests/angle_ilp_callback_test_5regular12-all.g6.csv")
 
 df_ilp_angle_test_12_all['tempo_total'] = df_ilp_angle_test_12_all['PLI_create_time'] + df_ilp_angle_test_12_all['solve_time']
 
@@ -49,5 +62,12 @@ print(f'\n\nMEAN: \nBrute: {mean_brute}\nDireto: {mean_direto}\nAngulo: {mean_an
 
 print(f'\n\nSTEP: \nBrute: {step_brute}\nDireto: {step_direct}\nAngulo: {step_angle}')
 
-df_brute_test_12_all['cluster'] = df_brute_test_12_all['tempo_total'].apply()
+#df_brute_test_12_all['cluster'] = df_brute_test_12_all['tempo_total'].apply(cluster_type)
+
+df_brute_test_12_all['step'] = step_brute
+df_brute_test_12_all['cluster'] = df_brute_test_12_all[['tempo_total', 'step']].apply(cluster_type2, axis=1)
+
+# ax = df_brute_test_12_all['cluster'].plot.hist()
+
+histogram(df_brute_test_12_all['cluster'])
 

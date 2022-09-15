@@ -3,7 +3,9 @@
 """
 
 import gurobipy as gp
+import psutil 
 import time
+import os
 from gurobipy import GRB
 
 def pair_to_angle(pair):
@@ -71,7 +73,21 @@ def mycallback(model, where):
     """
 
     if where == GRB.Callback.MIPSOL:
+
+        if model._cont % 100 == 0:
+            percentage_used_memory = psutil.virtual_memory()[2]
+            print("memória usada: ", percentage_used_memory)
+            if percentage_used_memory > 76:
+                model._break_type = 'memory'
+                model.terminate()
+
+        if model._cont > 10000:
+            model._break_type = 'iteration'
+            model.terminate()
+
         vals = model.cbGetSolution(model._x)
+
+        model._cont += 1
 
         cycles, paths = solution_cycles(vals, 5, model._G)
 
@@ -308,6 +324,8 @@ class Model: #(gp.Model):
         self.model.setParam('OutputFlag', 0)
         
         self.G = G
+        self.model._cont = 0
+        self.model._break_type = None
         self._init_x_variables()
 
         # The next lines are defining some variables inside the model object so
@@ -389,16 +407,41 @@ class Model: #(gp.Model):
         # as a parameter in the function optimize
         self.model.optimize(mycallback)
 
+    # getter method
+    def get_cont(self):
+        return self.model._cont
+
+    def get_break_type(self):
+        return self.model._break_type
+
+    @property
+    def cont(self):
+        return self.model._cont
+
 
 def set_angle_model(G):
     start_time = time.time()
     m = Model(G)
     status = True
     middle_time = time.time()
-    try:
-        m.solve()
-    except:
-        status = False
-    final_time = time.time()
-
-    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status]
+    total_memory, used_memory, _ = map(int, os.popen('free -t -m').readlines()[-1].split()[1:]) 
+    print("RAM memory % used:", used_memory/total_memory)
+    if used_memory/total_memory < 0.71:
+        try:
+            m.solve()
+        except:
+            status = False
+        final_time = time.time()
+        contador = m.get_cont()
+        break_type = m.get_break_type()
+        if break_type == 'iteration':
+            print('iteration')
+            status = None 
+        elif break_type == 'memory':
+            print('memory')
+            status = None 
+    else:
+        final_time = time.time()
+        status = None
+        contador = -1
+    return [G.graph6_string(), middle_time - start_time, final_time - middle_time, status, contador, break_type]
