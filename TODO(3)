@@ -485,10 +485,22 @@ graphs.RandomRegularBipartite()
 
 PROJETO DE TCC
 
-	Definições
+	Introdução
 	-	o que é um grafo
+		-	É um par (V,E) em que V ... e E ...
 	-	o que é um grafo regular
+		-	O que é o grau de um vértice
+		-	São grafos nos quais os vértices possuem todos o mesmo grau
+	-	Citar Bondy-Murty ou Diestel (dar uma lida em como eles definem essas coisas)
+		
 	-	O que é um emparelhamento perfeito: é um conjunto de arestas de G tal que ...
+	-	O que é uma decomposição
+		-	O que é um subgrafo
+		-	O que é um caminho
+		-	Decomposição em caminhos
+		-	P5-decomposição
+		-	P5-Decomposição de grafos 5-regulares
+		
 	
 	-	qual é o problema abordado?
 	
@@ -499,13 +511,31 @@ PROJETO DE TCC
 	-	histórico dos resultados
 		-	Favaron, Genest, Kouider
 		- 	Botler, Mota, Wakabayashi
+			-	O que são grafos bipartidos
 			-	O método que estamos explorando é uma extensão do método proposto neste paper
 		-	Botler + Luiz 
 		-	Buscar também por Conjectura de Dean e Kouider e Hakkvist
 			-	Tem um paper Botler + Alexandre Talon que lida com um problemas destes. 
 		-	explorar as referências desses papers
 	
-	-	qual o objetivo deste trablalho?
+	-	qual o objetivo deste trabalho?
+		-	Comparar três métodos algoritmicos para encontrar P5-decomposições de grafos 5-regulares
+		
+	-	que resultados obtivemos
+		-	resolvemos a conjectura de Favaron ... para a seguintes classes de grafos:
+			-	Grafos planares com até ... vértices
+			-	Grafos bipartidos com até ... vértices
+			-	Todos os grafos com até ... vértices
+			-	Resultados em grafos aleatórios com muitos vértices
+			
+	-	Metodologia
+		-	Sage
+		-	Nauty
+		-	classes de escolhidas e por que?
+		-	PLI
+		-	Força bruta/busca/algoritmo de trocas motivada pelo paper do Botler-Mota-Wakabayashi e do Botler-Hoffman
+		-	Como escolhemos os grafos aleatórios com muitos vértices
+		-	Gerar um benchmark
 	
 	-	há algoritmo polinomial?
 		-	isso é complicado de responder, não sabemos a resposta.
@@ -513,3 +543,47 @@ PROJETO DE TCC
 			-	paper de Fábio
 			-	Dissertação de Luiz
 		-	Fixado grafo H, decidir de um grafo G (não necessariamente regular) admite H_decomposição é NP-completo
+		
+	Método de busca
+		-	Decomposições em trilhas de comprimento 5
+		-	É possível obter esse tipo de decomposição facilmente
+			-	Podemos apresentar o algoritmo em sage
+			-	Petersen
+			-	Provar que todo grafo 5-regular que possui emparalhamento perfeito admite decomposição em trilhas de comprimento 5
+			-	O sage já possui função embutida para encontrar Petersen
+		-	Protótipo simplificado da busca
+		-	Trocas possíveis em cada decomposição
+		-
+	
+	ILP
+		-	o que é ILP
+		-	solvers:
+			-	CPLEX
+			-	GUROBI
+			-	GLPK
+			
+		Direto
+			-	Pode falar da ideia de gerar todos os caminhos
+				-	Mas isso não deu muito certo.
+			-	cada cor possui cinco arestas, dois vértices com grau 1 e grau máximo 2
+			-	Toda vez que encontrar algo que não é um caminho
+		ângulos
+			-	Motivado por um paper do Botler/Sambinelli/Cano
+			-	Conjectura de Gallai
+			-	Grafo linha (line graph)
+			-	evita criar uma variável para cada cor
+			
+	Resultados
+		-	Tempo por classe de grafos
+		-	Número de grafos de cada classe resolvidos
+		-	Porcentagem de cada classe resolvidos por cada método
+		-	Destacar o método que resolveu mais grafos
+		-	Destacar o método que resolveu grafos mais rapidamente
+		
+	Bibliografia
+		-	bibtex
+		-	padronizar o melhor possível a bibliografia
+			-	os nomes dos autores devem aparecer com a mesma estrutura: decidir entre Fábio Botler ou F. Botler para todos os nomes de autores de todos os artigos
+			
+			
+		
