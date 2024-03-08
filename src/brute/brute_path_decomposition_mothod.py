@@ -1,6 +1,6 @@
 import time
 from sage.all import *
-from path_decomposition import PathDecomposition
+from src.path_decomposition import PathDecomposition
 
 class BrutePathDecompositionMothod():
     def __init__(self, G, path_decomposition_functions: PathDecomposition = PathDecomposition) -> None:
