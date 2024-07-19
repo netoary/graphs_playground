@@ -2,13 +2,14 @@ import gurobipy as gp
 import psutil
 import time
 import os
-from abstract_ilp_path_decomposition_mothod import AbstractIlpPathDecompositionMothod
+from ilp.abstract_ilp_path_decomposition_mothod import AbstractIlpPathDecompositionMothod
+from gurobipy import Model
 from gurobipy import GRB
 from sage.all import *
 
 class AngleILPPathDecompositionMothod(AbstractIlpPathDecompositionMothod):
     def __init__(self, G):
-        self.model = gp.Model("5-path decomposition")
+        self.model = Model("5-path decomposition")
         self.model.setParam('OutputFlag', 0)
         
         self.G = G
@@ -43,7 +44,7 @@ class AngleILPPathDecompositionMothod(AbstractIlpPathDecompositionMothod):
 
     def _add_constr_vertex_degree(self):
         """
-        ### AJUSTAR Every vertex has at degree at most 2, and 0 has degree precisely 1
+        ### AJUSTAR 
         """
         vertices = self.G.vertices()
         for v in vertices:
@@ -59,7 +60,7 @@ class AngleILPPathDecompositionMothod(AbstractIlpPathDecompositionMothod):
 
     def _add_constr_one_color_to_each_edge(self):
         """
-        Every vertex has at degree at most 2, and 0 has degree precisely 1
+        ### AJUSTAR 
         """
 
         edges = self.G.edges()

@@ -2,18 +2,19 @@ import gurobipy as gp
 import psutil
 import time
 import os
-from abstract_ILP_path_decomposition_mothod import AbstractILPPathDecompositionMothod
+from ilp.abstract_ilp_path_decomposition_mothod import AbstractIlpPathDecompositionMothod
+from gurobipy import Model
 from gurobipy import GRB
 from sage.all import *
 
-class DirectILPPathDecompositionMothod(AbstractILPPathDecompositionMothod):
+class DirectILPPathDecompositionMothod(AbstractIlpPathDecompositionMothod):
     def __init__(self, G):
-        self.model = gp.Model("5-path decomposition")
+        self.model = Model("5-path decomposition")
         self.model.setParam('OutputFlag', 0)
         
         self.G = G
         # self._cont = 0
-        self.model._numero_de_cores = G.size()/5
+        self.model._numero_de_cores = int(G.size()/5)
         self.model._cont = 0
         self.model._break_type = None
         self._init_x_variables()
@@ -208,8 +209,8 @@ class DirectILPPathDecompositionMothod(AbstractILPPathDecompositionMothod):
                 for e in self.G.edges_incident(u):
                     a, b, _ = e
                     equation += self.x[a,b,c]
-            self.model.addConstr(equation>=self.y[u,c], name='each vertex has one edge of color c if it is in color c')
-            self.model.addConstr(equation<=5*self.y[u,c], name='each vertex has one edge of color c if it is in color c')
+                self.model.addConstr(equation>=self.y[u,c], name='each vertex has one edge of color c if it is in color c')
+                self.model.addConstr(equation<=5*self.y[u,c], name='each vertex has one edge of color c if it is in color c')
         self.model.update()
 
 

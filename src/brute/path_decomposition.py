@@ -59,7 +59,7 @@ class PathDecomposition():
         edges = self._graph.edges()
 
         hanging_edges_counter = 0
-        for i in range(self._n / 2):
+        for i in range(int(self._n / 2)):
             colors[i] = []
         for i in edges:
             colors[i[2]].append(i)
