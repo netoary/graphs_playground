@@ -19,9 +19,11 @@ def generate_random_g6_list_regular_birpartite_graphs(n1: int, n2: int, d: int, 
 
 
 # no_filter_benchmark = [generate_random_g6_list_regular_graphs(5, (i+1)*10, 10) for i in range(10)]
-for i in range(10):
-    f = open(f"graphs_playground/graphs/benchmark/all_{(i+1)*10}.g6", "w")
-    graphs_sample = generate_random_g6_list_regular_graphs(5, (i+1)*10, 10)
+multiplicador = 100
+numero_de_grafos = 10
+for i in range(numero_de_grafos):
+    f = open(f"graphs_playground/graphs/benchmark/extra_big/all_{(i+1)*multiplicador}.g6", "w")
+    graphs_sample = generate_random_g6_list_regular_graphs(5, (i+1)*multiplicador, numero_de_grafos)
     for graph in graphs_sample:
         f.write(graph)
         f.write("\n")
@@ -29,9 +31,9 @@ for i in range(10):
 
 
 # bipartite_benchmark = [generate_random_g6_list_regular_birpartite_graphs(int((i+1)*10/2), int((i+1)*10/2), 5, 10) for i in range(10)]
-for i in range(10):
-    f = open(f"graphs_playground/graphs/benchmark/birpartite_{(i+1)*10}.g6", "w")
-    graphs_sample = generate_random_g6_list_regular_birpartite_graphs(int((i+1)*10/2), int((i+1)*10/2), 5, 10)
+for i in range(numero_de_grafos):
+    f = open(f"graphs_playground/graphs/benchmark/extra_big/birpartite_{(i+1)*multiplicador}.g6", "w")
+    graphs_sample = generate_random_g6_list_regular_birpartite_graphs(int((i+1)*multiplicador/2), int((i+1)*multiplicador/2), 5, numero_de_grafos)
     for graph in graphs_sample:
         f.write(graph)
         f.write("\n")
